@@ -1,0 +1,3 @@
+TRUNCATE
+    happydog_users
+    RESTART IDENTITY CASCADE;
