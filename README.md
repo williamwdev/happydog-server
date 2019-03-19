@@ -14,7 +14,7 @@
 ## Sample Data
 
 - To seed the database for development: `psql -U happydog -d happydog -a -f seeds/seed.happydog_tables.sql`
-- To clear seed data: `psql -U thingful -d thingful -a -f seeds/trunc.happydog_tables.sql`
+- To clear seed data: `psql -U happydog -d happydog -a -f seeds/trunc.happydog_tables.sql`
 
 ## Scripts
 
