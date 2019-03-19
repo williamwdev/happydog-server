@@ -8,6 +8,7 @@ const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
 const authRouter = require('./auth/auth-router');
 const usersRouter = require('./users/users-router');
+const notesRouter = require('./notes/notes-router');
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(cors());
 
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/notes', notesRouter);
 
 
 // Error handler middleware
