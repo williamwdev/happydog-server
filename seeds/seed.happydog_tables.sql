@@ -14,7 +14,7 @@ VALUES
 
 INSERT INTO happydog_users (user_name, full_name, password)
 VALUES
-    ('user1', 'Happy Dog', 'password'),
+    ('user1', 'Happy Dog', 'Password123!'),
     ('user2', 'Unhappy Dog', 'password'),
     ('admin', 'admin', 'password');
 
