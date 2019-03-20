@@ -5,6 +5,12 @@ TRUNCATE
     happydog_notes
     RESTART IDENTITY CASCADE;
 
+INSERT INTO happydog_folders (id, folder_name)
+VALUES
+    (1, 'Vet Visits'),
+    (2, 'Vaccination Records'),
+    (3, 'Journal');
+
 
 INSERT INTO happydog_users (user_name, full_name, password)
 VALUES

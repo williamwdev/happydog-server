@@ -9,6 +9,7 @@ const { NODE_ENV } = require('./config');
 const authRouter = require('./auth/auth-router');
 const usersRouter = require('./users/users-router');
 const notesRouter = require('./notes/notes-router');
+const foldersRouter = require('./folders/folders-router');
 
 const app = express();
 
@@ -20,11 +21,14 @@ app.use(morgan(morganOption));
 app.use(helmet());
 app.use(cors());
 
-
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/notes', notesRouter);
+app.use('/api/folders', foldersRouter);
 
+app.get('/', (req, res) => {
+  res.send('Hello, boilerplate!');
+});
 
 // Error handler middleware
 app.use(function errorHandler(error, req, res, next) {
