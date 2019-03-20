@@ -48,7 +48,7 @@ foldersRouter
 
 
 foldersRouter
-  .route('/api/folders/:folderId')
+  .route('/:folderId')
   .all((req, res, next) => {
     const folderId = req.params.folderId;
     const db = req.app.get('db');
