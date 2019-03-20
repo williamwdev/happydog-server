@@ -14,7 +14,7 @@ function sanitizeFolder(folder) {
 }
 
 foldersRouter
-  .route('/api/folders')
+  .route('/')
   .get((req, res, next) => {
     const dbInstance = req.app.get('db');
     foldersService.getAllFolders(dbInstance)

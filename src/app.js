@@ -26,10 +26,6 @@ app.use('/api/users', usersRouter);
 app.use('/api/notes', notesRouter);
 app.use('/api/folders', foldersRouter);
 
-app.get('/', (req, res) => {
-  res.send('Hello, boilerplate!');
-});
-
 // Error handler middleware
 app.use(function errorHandler(error, req, res, next) {
   let response;
