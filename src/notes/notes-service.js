@@ -3,12 +3,12 @@
 const xss = require('xss');
 
 const notesService = {
-  getAllNotes(db) {
+  getAllNotes(db, user) {
     return db
       .from('happydog_notes')
       .join('happydog_users', 'happydog_notes.user_id', '=', 'happydog_users.id')
-      .select('happydog_notes.name', 'happydog_notes.id');
-    // .where('happydog_users.user_name', '=', user);
+      .select('happydog_notes.name', 'happydog_notes.id')
+      .where('happydog_users.user_name', '=', user);
   },
 
   deleteNote(db, id){
