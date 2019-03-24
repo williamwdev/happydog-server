@@ -1,89 +1,40 @@
 /* eslint-disable strict */
-const express = require('express');
-const jsonParser = express.json();
-const notesService = require('./notes-service');
-const xss = require('xss');
-
+const express = require ('express');
+const NotesService = require ('./notes-service');
 const notesRouter = express.Router();
+const jsonBodyParser = express.json();
+const { requireAuth } = require('../middleware/jwt-auth');
 
-function sanitizeNotes(note) {
-  return {
-    id: note.id,
-    name: xss(note.name)
-  };
-}
+const AuthService = require('../auth/auth-service');
 
 notesRouter
   .route('/')
+  .all(requireAuth)
   .get((req, res, next) => {
-    const dbInstance = req.app.get('db');
-    notesService.getAllNotes(dbInstance)
+    return NotesService.getAllNotes(req.app.get('db'), req.user.user_name)
       .then(notes => {
-        return res.json(notes.map(note => sanitizeNotes(note)));
+        res.status(200);
+        res.json(NotesService.serializeNotes(notes));
       })
       .catch(next);
   })
-  .post(jsonParser, (req, res, next) => {
-    const dbInstance = req.app.get('db');
+  .post(jsonBodyParser, (req, res, next) => {
     const { name } = req.body;
-    if (!name) {
-      return res.status(400).json({error: {message: 'Missing title in request body'}});
-    }
-    notesService.insertNotes(dbInstance, { name })
-      .then(note => {
-        res
-          .status(201)
-          .location(`/api/notes/${note.id}`)
-          .json(sanitizeNotes(note));
-      });
   })
-  .delete((req, res, next) => {
-    const { id } = req.params;
-    notesService.deleteNotes(req.app.get('db'), id)
+  .delete(jsonBodyParser, (req,res,next) => {
+    return NotesService.deleteNote(req.app.get('db'), req.body.noteId)
       .then(() => {
-        res.status(204).end();
-      })
-      .catch(next);
-  });
-
-
-notesRouter
-  .route('/:noteId')
-  .all((req, res, next) => {
-    const noteId = req.params.noteId;
-    const db = req.app.get('db');
-    notesService.getNotesById(db, noteId)
-      .then(note => {
-        if (!note) {
-          return res.status(404).json({
-            error: {message: `Notes with id ${noteId} not found` }
-          });
-        }
-        res.note = note;
-        next();
+        res.status(200);
+        res.end();
       })
       .catch(next);
   })
-  .delete((req, res, next) => {
-    const id = req.params.noteId;
-    const db = req.app.get('db');
-    notesService.deleteNotes(db, id)
-      .then(() => {
-        res.status(204).end();
-      })
-      .catch(next);
-  })
-  .patch(jsonParser, (req, res, next) => {
-    const { name } = req.body;
-    const id = req.params.noteId;
-    if (!name) {
-      return res.status(400).json({error: { message: 'No updated fields were found to update from'}});
-    }
-    const newNotes = { name };
-    const db = req.app.get('db');
-    notesService.updateNotes(db, id, newNotes)
-      .then(() => {
-        res.status(204).end();
+  .patch(jsonBodyParser, (req, res, next) => {
+    console.log(req.body);
+    return NotesService.updateNote(req.app.get('db'), req.body)
+      .then((note) => {
+        res.status(200);
+        res.json(note);
       })
       .catch(next);
   });

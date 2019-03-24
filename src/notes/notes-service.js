@@ -1,24 +1,45 @@
 /* eslint-disable strict */
-const NotesService = {
-  getAllNotes(db, user_name) {
+
+const xss = require('xss');
+
+const notesService = {
+  getAllNotes(db) {
     return db
       .from('happydog_notes')
       .join('happydog_users', 'happydog_notes.user_id', '=', 'happydog_users.id')
-      .select('happydog_notes.name', 'happydog_notes.id')
-      .where('happydog_users.user_name', '=', user_name);
+      .select('happydog_notes.name', 'happydog_notes.id');
+    // .where('happydog_users.user_name', '=', user);
   },
-  insertNote(db, newNote) {
-    return db.insert(newNote).into('happydog_notes').returning('*').then(rows => rows[0]);
+
+  deleteNote(db, id){
+    return db
+      .from('happydog_notes')
+      .where('id', id)
+      .del();
   },
-  getNoteById(db, id) {
-    return db('happydog_notes').select('*').where('id', id).first();
+  
+  updatenote(db, note) {
+    return db
+      .from('happydog_notes')
+      .where({id: note.id})
+      .update({
+        complete: note.complete
+      })
+      .returning('*');
   },
-  deleteNote(db, id) {
-    return db('happydog_notes').where('id', id).delete();
+  
+  serializeNotes(notes) {
+    return notes.map((note) => this.serializeNote(note));
   },
-  updateNote(db, id, newNote) {
-    return db('happydog_notes').where('id', id).first().update(newNote);
+
+  serializeNote(note) {
+    return {
+      id: note.id,
+      name: xss(note.name),
+      date_created: note.date_created,
+      user_id: note.user_id
+    };
   }
 };
-  
-module.exports = NotesService;
+
+module.exports = notesService;

@@ -1,85 +1,48 @@
 /* eslint-disable strict */
-const express = require('express');
-const CommentsService = require('./comments-service');
-const xss = require('xss');
-
-const commentsRouter = express.Router();
+const express = require ('express');
 const jsonBodyParser = express.json();
+const commentRouter = express.Router();
+const { requireAuth } = require('../middleware/jwt-auth')
+const commentService = require('./comments-service');
 
-function sanitizeComment(comment) {
-  return {
-    id: comment.id,
-    comment: xss(comment.comment),
-    modified: comment.modified,
-  };
-}
-
-commentsRouter
+commentRouter
   .route('/')
-  .get((req, res, next) => {
-    const dbInstance = req.app.get('db');
-    CommentsService.getAllComments(dbInstance)
-      .then(comments => {
-        return res.json(comments.map(comment => sanitizeComment(comment)));
-      })
-      .catch(next);
-  })
+  .all(requireAuth)
   .post(jsonBodyParser, (req, res, next) => {
-    const dbInstance = req.app.get('db');
-    const { comment } = req.body;
-    const newComments = { comment };
- 
-    for(const [key, value] of Object.entries(newComments)) {
-      if (!value) {
-        return res.status(400).json({
-          error: { message: `Missing '${key}' in request body` }
+    const { comment, noteId } = req.body;
+    if(!req.body['comment'])
+      return res.status(400)
+        .json({
+          error: 'Missing comment in request body'
         });
-      }
-    }
 
-    CommentsService.insertComments(dbInstance, newComments)
-      .then(comment => {
-        res
-          .status(201)
-          .location(`/comment/${comment.id}`)
-          .json(sanitizeComment(comment));
-      })
-      .catch(next);
-  });
-
-commentsRouter
-  .route('/:commentId')
-  .all((req, res, next) => {
-    CommentsService.getCommentsById(req.app.get('db'), req.params.commentId)
-      .then(comment => {
-        if (!comment) {
-          return res.status(404).json({
-            error: {message: `Comment with id ${req.params.id} not found` }
-          });
-        }
-        res.comment = comment;
-        next();
+    return commentService.insertComment(req.app.get('db'), comment, noteId)
+      .then( comment => {
+        res.status(201);
+        res.json(commentService.serializeComment(comment));
       })
       .catch(next);
   })
-  .get((req, res, next) => {
-    const dbInstance = req.app.get('db');
-    const { commentId } = req.params;
-    CommentsService.getCommentsById(dbInstance, commentId)
-      .then(comment => {
-        return res.json(sanitizeComment(comment));
-      })
-      .catch(next);
-  })
-  .delete((req, res, next) => {
-    const { commentId } = req.params;
-    CommentsService.deleteComments(req.app.get('db'), commentId)
+  .delete(jsonBodyParser, (req,res,next) => {
+    return commentService.deleteComment(req.app.get('db'), req.body.id)
       .then(() => {
-        res.status(204).end();
+        res.status(200);
+        res.end();
       })
       .catch(next);
   });
 
+commentRouter
+  .route('/:noteId')
+  .all(requireAuth)
+  .get(jsonBodyParser, (req, res, next) => {      
+    return commentService.getComments(req.app.get('db'), Number(req.params.noteId))
+      .then( comments => {
+        res.status(200);
+        res.json(commentService.serializeCommentsList(comments));
+      })
+      .catch(next);
+  });
+    
 
-module.exports = commentsRouter;
-  
+module.exports = commentRouter;

@@ -1,40 +1,43 @@
-'use strict';
+/* eslint-disable strict */
+const xss = require('xss');
 
-const NotesService = {
-  getAllNotes(db) {
+const commentService = {
+  insertComment(db, comment, noteId){
     return db
-      .select('*')
-      .from('happydog_notes');
-  },
-  getNotesById(db, id) {
-    return db
-      .from('happydog_notes')
-      .select('*')
-      .where('id', id)
-      .first();
-  },
-  insertNotes(db, newNotes) {
-    return db
-      .insert(newNotes)
-      .into('happydog_notes')
+      .insert({note_id: noteId, content: comment})
+      .into('happydog_comments')
       .returning('*')
-      .then(rows => rows[0]);
+      .then(([comment]) => comment);
   },
-  deleteNotes(db, id) {
-    return db('happydog_notes')
-      .where('id', id)
-      .delete();
+
+  getComments(db, noteId){
+    return db 
+      .from('happydog_comments')
+      .join('happydog_notes', 'happydog_notes.id', '=', 'happydog_comments.note_id')
+      .select('happydog_comments.content', 'happydog_comments.date_created', 'happydog_comments.id')
+      .where('happydog_notes.id', '=', noteId);
   },
-  updateNotes(db, id, newNotesFields) {
+
+  deleteComment(db, id){
     return db
-      .from('happydog_notes')
-      .select('*')
+      .from('happydog_comments')
       .where('id', id)
-      .first()
-      .update(newNotesFields)
-      .return('*')
-      .then(rows => rows[0]);
+      .del();
+  },
+
+  serializeCommentsList(comments) {
+    return comments.map((comment) => this.serializeComment(comment));
+  },
+
+  serializeComment(comment){
+    return {
+      id: comment.id,
+      content: xss(comment.content),
+      date_created: comment.date_created,
+      date_modified: comment.date_modified,
+      note_id: comment.note_id
+    };
   }
 };
 
-module.exports = NotesService;
+module.exports = commentService;
