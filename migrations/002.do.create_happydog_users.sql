@@ -6,3 +6,7 @@ CREATE TABLE happydog_users (
     date_created TIMESTAMP NOT NULL DEFAULT now(),
     date_modified TIMESTAMP
 );
+
+ALTER TABLE happydog_notes
+    ADD COLUMN
+        user_id INTEGER REFERENCES happydog_users(id) ON DELETE CASCADE;

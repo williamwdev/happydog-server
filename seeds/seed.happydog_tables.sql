@@ -1,29 +1,20 @@
 BEGIN;
 
 TRUNCATE
-    happydog_users,
-    happydog_notes
+    happydog_notes,
+    happydog_users
     RESTART IDENTITY CASCADE;
-
-INSERT INTO happydog_folders (id, folder_name)
-VALUES
-    (1, 'Vet Visits'),
-    (2, 'Vaccination Records'),
-    (3, 'Journal');
-
 
 INSERT INTO happydog_users (user_name, full_name, password)
 VALUES
     ('user1', 'Happy Dog', 'Password123!'),
-    ('user2', 'Unhappy Dog', 'password'),
-    ('admin', 'admin', 'password');
+    ('user2', 'Unhappy Dog', 'Password123!');
 
-INSERT INTO happydog_notes (note_title, content)
+
+INSERT INTO happydog_notes (name, user_id)
 VALUES
-    ('Vaccinations', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi'),
-    ('Medicines', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi'),
-    ('Baths', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi'),
-    ('Dog park', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi'),
-    ('Allergies', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi');
+    ('Vet Visits', 1),
+    ('Vaccination Records', 1),
+    ('Journal', 1);
 
 COMMIT;

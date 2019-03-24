@@ -9,7 +9,8 @@
     "dev": "nodemon src/server.js",
     "migrate": "postgrator --config postgrator-config.js",
     "predeploy": "npm audit",
-    "deploy": "git push heroku master"
+    "deploy": "git push heroku master",
+    "seed": "psql -U happydog -d happydog -a -f seeds/seed.happydog_tables.sql"
   },
   "keywords": [],
   "author": "",
