@@ -1,40 +1,24 @@
-'use strict';
-
+/* eslint-disable strict */
 const NotesService = {
-  getAllNotes(db) {
-    return db
-      .select('*')
-      .from('happydog_notes');
-  },
-  getNotesById(db, id) {
+  getAllNotes(db, user_name) {
     return db
       .from('happydog_notes')
-      .select('*')
-      .where('id', id)
-      .first();
+      .join('happydog_users', 'happydog_notes.user_id', '=', 'happydog_users.id')
+      .select('happydog_notes.name', 'happydog_notes.id')
+      .where('happydog_users.user_name', '=', user_name);
   },
-  insertNotes(db, newNotes) {
-    return db
-      .insert(newNotes)
-      .into('happydog_notes')
-      .returning('*')
-      .then(rows => rows[0]);
+  insertNote(db, newNote) {
+    return db.insert(newNote).into('happydog_notes').returning('*').then(rows => rows[0]);
   },
-  deleteNotes(db, id) {
-    return db('happydog_notes')
-      .where('id', id)
-      .delete();
+  getNoteById(db, id) {
+    return db('happydog_notes').select('*').where('id', id).first();
   },
-  updateNotes(db, id, newNotesFields) {
-    return db
-      .from('happydog_notes')
-      .select('*')
-      .where('id', id)
-      .first()
-      .update(newNotesFields)
-      .return('*')
-      .then(rows => rows[0]);
+  deleteNote(db, id) {
+    return db('happydog_notes').where('id', id).delete();
+  },
+  updateNote(db, id, newNote) {
+    return db('happydog_notes').where('id', id).first().update(newNote);
   }
 };
-
+  
 module.exports = NotesService;
