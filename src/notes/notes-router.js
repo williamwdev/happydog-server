@@ -30,7 +30,6 @@ notesRouter
       .catch(next);
   })
   .patch(jsonBodyParser, (req, res, next) => {
-    console.log(req.body);
     return NotesService.updateNote(req.app.get('db'), req.body)
       .then((note) => {
         res.status(200);

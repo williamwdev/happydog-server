@@ -11,7 +11,6 @@ const notesRouter = require('./notes/notes-router');
 const authRouter = require('./auth/auth-router');
 const addNoteRouter = require('./add-note/add-note-router');
 const commentRouter = require('./comments/comments-router');
-// const commentRouter = require('./comments/comments-router');
 const app = express();
 
 const morganOption = (NODE_ENV === 'production')
@@ -40,8 +39,6 @@ app.use(function errorHandler(error, req, res, next) {
   }
   res.status(500).json(response);
 });
-
-
 
 
 module.exports = app;
