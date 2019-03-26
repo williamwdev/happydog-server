@@ -21,9 +21,9 @@ app.use(morgan(morganOption));
 app.use(helmet());
 app.use(cors());
 
-app.use('/api/my-notes', notesRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/my-notes', notesRouter);
 app.use('/api/add-note', addNoteRouter);
 app.use('/api/comments', commentRouter);
 
