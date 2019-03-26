@@ -12,6 +12,7 @@ const authRouter = require('./auth/auth-router');
 const addNoteRouter = require('./add-note/add-note-router');
 const commentRouter = require('./comments/comments-router');
 const app = express();
+const checklistRouter = require('./checklist/checklist-router');
 
 const morganOption = (NODE_ENV === 'production')
   ? 'tiny'
@@ -26,6 +27,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/my-notes', notesRouter);
 app.use('/api/add-note', addNoteRouter);
 app.use('/api/comments', commentRouter);
+app.use('/api/checklist', checklistRouter);
 
 
 // Error handler middleware
