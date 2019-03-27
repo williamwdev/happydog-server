@@ -2,9 +2,9 @@
 const xss = require('xss');
 
 const commentService = {
-  insertComment(db, comment, noteId){
+  insertComment(db, comment, noteId, duedate){
     return db
-      .insert({note_id: noteId, content: comment})
+      .insert({note_id: noteId, content: comment, duedate: duedate})
       .into('happydog_comments')
       .returning('*')
       .then(([comment]) => comment);
@@ -14,7 +14,7 @@ const commentService = {
     return db 
       .from('happydog_comments')
       .join('happydog_notes', 'happydog_notes.id', '=', 'happydog_comments.note_id')
-      .select('happydog_comments.content', 'happydog_comments.date_created', 'happydog_comments.id')
+      .select('happydog_comments.content', 'happydog_comments.date_created', 'happydog_comments.duedate', 'happydog_comments.id')
       .where('happydog_notes.id', '=', noteId);
   },
 
@@ -33,6 +33,7 @@ const commentService = {
     return {
       id: comment.id,
       content: xss(comment.content),
+      duedate: comment.duedate,
       date_created: comment.date_created,
       date_modified: comment.date_modified,
       note_id: comment.note_id

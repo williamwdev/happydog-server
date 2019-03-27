@@ -9,14 +9,14 @@ commentRouter
   .route('/')
   .all(requireAuth)
   .post(jsonBodyParser, (req, res, next) => {
-    const { comment, noteId } = req.body;
+    const { comment, noteId, duedate } = req.body;
     if (!req.body['comment'])
       return res.status(400).json({
         error: 'Missing comment in request body'
       });
 
     return commentService
-      .insertComment(req.app.get('db'), comment, noteId)
+      .insertComment(req.app.get('db'), comment, noteId, duedate)
       .then(comment => {
         res.status(201);
         res.json(commentService.serializeComment(comment));
