@@ -8,7 +8,7 @@ const ChecklistService = {
     return db
       .from('happydog_checklist')
       .join('happydog_users', 'happydog_checklist.user_id', '=', 'happydog_users.id')
-      .select('happydog_checklist.ischecked', 'happydog_notes.id')
+      .select('happydog_checklist.value', 'happydog_notes.id')
       .where('happydog_users.user_name', '=', user);
   },
 

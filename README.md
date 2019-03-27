@@ -21,8 +21,6 @@
 - Start application for development: `npm run dev`
 - Run tests: `npm test`
 
+## Login instructions
 
-
-sendgrid notes:
-API KEY: 6779f31a-4c16-11e9-8646-d663bd873d93
-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
+- Demo login: user: demo / pw: Demo1234!
