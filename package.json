@@ -13,6 +13,9 @@
     "seed": "psql -U happydog -d happydog -a -f seeds/seed.happydog_tables.sql"
   },
   "keywords": [],
+  "engines": {
+    "node": "11.6.0"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -31,7 +34,7 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^6.0.2",
+    "mocha": "^6.0.1",
     "nodemon": "^1.18.10",
     "postgrator-cli": "^3.1.0",
     "supertest": "^3.4.2"
