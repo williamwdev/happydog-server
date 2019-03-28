@@ -7,11 +7,11 @@
 - Create database user: `createuser happydog`
 - Grant privileges to new user in `psql`:
   - `GRANT ALL PRIVILEGES ON DATABASE happydog TO happydog`
-  - `GRANT ALL PRIVILEGES ON DATABASE happydog-test TO happydog`
+  - `GRANT ALL PRIVILEGES ON DATABASE happydog-test TO happydog` or `GRANT ALL PRIVILEGES ON DATABASE "happydog-test" TO happydog`;
 - Prepare environment file: `cp example.env .env`
   - Replace values in `.env` with your custom values if necessary.
 - Bootstrap development database: `MIGRATION_DB_NAME=happydog npm run migrate`
-- Bootstrap test database: `MIGRATION_DB_NAME=thingful-test npm run migrate`
+- Bootstrap test database: `MIGRATION_DB_NAME=happydog-test npm run migrate`
 
 ## Sample Data
 
@@ -25,4 +25,4 @@
 
 ## Login instructions
 
-- Demo login: user: demo / pw: Demo1234!
+

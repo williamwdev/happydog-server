@@ -7,11 +7,13 @@ function makeUsersArray() {
     {
       id: 1,
       user_name: "pancake",
+      full_name: 'test pancake',
       password: "Pancake1234!"
     },
     {
       id: 2,
       user_name: "pancake1",
+      full_name: 'test pancake1',
       password: "Pancake1234!"
     }
   ];
