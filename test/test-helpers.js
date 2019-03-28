@@ -37,16 +37,50 @@ function makeCommentsArray(user, notes) {
     {
       id: 1,
       content: "first test comment",
-      due_date: "2019-3-29",
+      duedate: "2019-3-29",
       note_id: 1
     },
     {
       id: 2,
       content: "second test comment",
-      due_date: "2019-3-29",
+      duedate: "2019-3-29",
       note_id: 1
     }
   ];
+}
+
+function makeExpectedNote(users, note) {
+  const user = users
+    .find(user => user.id === note.user_id)
+
+  return {
+    id: note.id,
+    name: note.name,
+    date_created: note.date_created,
+    user: {
+      id: user.id,
+      user_name: user.user_name,
+      full_name: user.full_name,
+      date_created: user.date_created,
+    },
+  }
+}
+
+function makeMaliciousNote(user) {
+  const maliciousNote = {
+    id: 911,
+    date_created: new Date().toISOString(),
+    name: 'bad stuff',
+    user_id: user.id,
+  }
+  const expectedNote = {
+    ...makeExpectedNote([user], maliciousNote),
+    name: 'bad stuff',
+  }
+  return {
+    maliciousNote,
+    expectedNote,
+  }
 }
 
 function makeNotesFixtures() {
@@ -74,15 +108,20 @@ function seedUsers(db, users) {
   return db.into("happydog_users").insert(preppedUsers);
 }
 
-function seedNotesTable(db, users, notes, comments = []) {
+function seedNotesTable(db, users, notes) {
   return seedUsers(db, users)
     .then(() => db.into("happydog_notes")
     .insert(notes))
-    .then(
-      () => comments.length && db
-      .into("happydog_comments")
-      .insert(comments)
-    );
+}
+
+function seedMaliciousNote(db, user, note) {
+
+  return seedUsers(db, [user])
+    .then(() =>
+      db
+        .into('happydog_notes')
+        .insert([note])
+    )
 }
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
@@ -97,8 +136,11 @@ module.exports = {
   makeUsersArray,
   makeNotesArray,
   makeCommentsArray,
+  makeExpectedNote,
   makeNotesFixtures,
+  makeMaliciousNote,
   cleanTables,
+  seedMaliciousNote,
   seedUsers,
   seedNotesTable,
   makeAuthHeader
