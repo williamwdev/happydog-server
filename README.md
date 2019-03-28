@@ -3,13 +3,15 @@
 ## Setting Up
 
 - Install dependencies: `npm install`
-- Create development and test databases: `createdb happydog`
+- Create development and test databases: `createdb happydog`, `createdb happydog-test`
 - Create database user: `createuser happydog`
 - Grant privileges to new user in `psql`:
   - `GRANT ALL PRIVILEGES ON DATABASE happydog TO happydog`
+  - `GRANT ALL PRIVILEGES ON DATABASE happydog-test TO happydog`
 - Prepare environment file: `cp example.env .env`
   - Replace values in `.env` with your custom values if necessary.
 - Bootstrap development database: `MIGRATION_DB_NAME=happydog npm run migrate`
+- Bootstrap test database: `MIGRATION_DB_NAME=thingful-test npm run migrate`
 
 ## Sample Data
 
