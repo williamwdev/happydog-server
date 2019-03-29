@@ -26,52 +26,53 @@ describe('Notes Endpoints', function() {
 
   afterEach('cleanup', () => helpers.cleanTables(db));
 
-  // NOTE: tests begin
+  // NOTE: GET tests begin
   describe('GET /api/my-notes', () => {
     context('Given no notes', () => {
       beforeEach('insert users', () => {
-        helpers.seedNotesTable(db, testUsers);
+        helpers.seedNotesTables(db, testUsers);
       });
       it('responds with 200 and empty array', () => {
-        const invalidSecret = 'happy-dog-secret';
         return supertest(app)
           .get('/api/my-notes')
-          .set('Authorization', helpers.makeAuthHeader(testUser, invalidSecret))
+          .set('Authorization', helpers.makeAuthHeader(testUser, process.env.JWT_SECRET))
           .expect(200, []);
       });
     });
   });
 
+  describe('POST /api/add-note', () => {
+    context('User with no token', () => {
+      it('responds with 401 unauthorized', () => {
+        return supertest(app)
+          .get('/api/my-notes')
+          .expect(401);
+      });
+    });
 
-  context('Given there are notes and users in the db', () => {
-    beforeEach('insert notes and users', () => {
-      helpers.seedNotesTable(db, testUsers, testNotes);
+    context('wrong or invalid token', () => {
+      it('responds with 401 unauthorized', () => {
+        return supertest(app)
+          .post('/api/add-note')
+          .set('Authorization', helpers.makeAuthHeader(testUser, 'wrongToken'))
+          .expect(401);
+      });
     });
-    it('responds with 200 and all cards', () => {
-      const invalidSecret = 'happy-dog-secret';
-      const expectedNotes = [
-        {
-          id: 1,
-          name: 'Vet Visits',
-        },
-        {
-          id: 2,
-          name: 'Vaccinations',
-        },
-        {
-          id: 3,
-          name: 'Grooming',
-        },
-        {
-          id: 4,
-          name: 'Beach Day',
-        }
-      ];
-      return supertest(app)
-        .get('/api/my-notes')
-        .set('Authorization', helpers.makeAuthHeader(testUser, invalidSecret))
-        .expect(200, expectedNotes);
+
+    context('With correct bearer token and no notes present', () => {
+      before('insert notes', () =>
+        helpers.seedNotesTables(
+          db,
+          testUsers
+        )
+      );
+      it('responds with 200 and empty array', () => {
+        return supertest(app)
+          .get('/api/my-notes')
+          .set('Authorization', helpers.makeAuthHeader(testUser, process.env.JWT_SECRET))
+          .expect(200, []);
+      });
     });
+
   });
-
 });

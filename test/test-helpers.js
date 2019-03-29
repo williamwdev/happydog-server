@@ -22,22 +22,18 @@ function makeUsersArray() {
 function makeNotesArray(users) {
   return [
     {
-      id: 1,
       name: "Vet Visits",
       user_id: users[0].id
     },
     {
-      id: 2,
       name: "Vaccinations",
       user_id: users[0].id
     },
     {
-      id: 3,
       name: "Grooming",
       user_id: users[0].id
     },
     {
-      id: 4,
       name: "Beach Day",
       user_id: users[0].id
     }
@@ -120,7 +116,7 @@ function seedUsers(db, users) {
   return db.into("happydog_users").insert(preppedUsers);
 }
 
-function seedNotesTable(db, users, notes = []) {
+function seedNotesTables(db, users, notes = []) {
   return seedUsers(db, users)
     .then(() => db.into("happydog_notes").insert(notes))
     .then(() => {});
@@ -142,7 +138,7 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
   const token = jwt.sign({ user_id: user.id }, secret, {
     subject: user.user_name,
     algorithm: 'HS256'
-  });
+  })
   return `Bearer ${token}`;
 }
 
@@ -156,7 +152,7 @@ module.exports = {
   cleanTables,
   seedMaliciousNote,
   seedUsers,
-  seedNotesTable,
+  seedNotesTables,
   seedCommentsTable,
   makeAuthHeader
 };
