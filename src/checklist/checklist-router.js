@@ -20,7 +20,12 @@ checklistRouter
   })
   .post(jsonBodyParser, (req, res, next) => {
     const { value } = req.body;
+    return ChecklistService.createChecked(req.app.get('db'), req.user.id, value)
+      .then(value => {
+        res.status(201);
+        res.json(value);
+      })
+      .catch(next);
   });
-
 
 module.exports = checklistRouter;

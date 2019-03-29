@@ -19,20 +19,28 @@ function makeUsersArray() {
   ];
 }
 
-function makeNotesArray(user) {
+function makeNotesArray(users) {
   return [
     {
       id: 1,
-      name: "first note"
+      name: 'Vet Visits',
     },
     {
       id: 2,
-      name: "second note"
+      name: 'Vaccinations',
+    },
+    {
+      id: 3,
+      name: 'Grooming',
+    },
+    {
+      id: 4,
+      name: 'Beach Day',
     }
   ];
 }
 
-function makeCommentsArray(user, notes) {
+function makeCommentsArray(users, notes) {
   return [
     {
       id: 1,
@@ -101,11 +109,11 @@ function cleanTables(db) {
 }
 
 function seedUsers(db, users) {
-  const preppedUsers = users.map(user => ({
+  const testUsers = users.map(user => ({
     ...user,
     password: bcrypt.hashSync(user.password, 1)
   }));
-  return db.into("happydog_users").insert(preppedUsers);
+  return db.into("happydog_users").insert(testUsers);
 }
 
 function seedNotesTable(db, users, notes) {

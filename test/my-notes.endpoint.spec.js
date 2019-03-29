@@ -9,7 +9,7 @@ const { expect } = require('chai');
 describe('Notes Endpoints', function() {
   let db;
 
-  const { testUsers } = helpers.makeNotesFixtures();
+  const { testUsers, testNotes, testComments } = helpers.makeNotesFixtures();
   const testUser = testUsers[0];
 
   // NOTE: mocha hooks
@@ -27,14 +27,12 @@ describe('Notes Endpoints', function() {
   afterEach('cleanup', () => helpers.cleanTables(db));
 
   // NOTE: tests begin
-
   describe('GET /api/my-notes', () => {
     context('Given no notes', () => {
       beforeEach('insert users', () => {
         helpers.seedNotesTable(db, testUsers);
       });
       it('responds with 200 and empty array', () => {
-        // const validUser = testUsers[0];
         const invalidSecret = 'happy-dog-secret';
         return supertest(app)
           .get('/api/my-notes')
@@ -44,23 +42,36 @@ describe('Notes Endpoints', function() {
     });
   });
 
+
+  context('Given there are notes and users in the db', () => {
+    beforeEach('insert notes and users', () => {
+      helpers.seedNotesTable(db, testUsers, testNotes);
+    });
+    it('responds with 200 and all cards', () => {
+      const invalidSecret = 'happy-dog-secret';
+      const expectedNotes = [
+        {
+          id: 1,
+          name: 'Vet Visits',
+        },
+        {
+          id: 2,
+          name: 'Vaccinations',
+        },
+        {
+          id: 3,
+          name: 'Grooming',
+        },
+        {
+          id: 4,
+          name: 'Beach Day',
+        }
+      ];
+      return supertest(app)
+        .get('/api/my-notes')
+        .set('Authorization', helpers.makeAuthHeader(testUser, invalidSecret))
+        .expect(200, expectedNotes);
+    });
+  });
+
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
