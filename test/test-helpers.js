@@ -45,13 +45,13 @@ function makeCommentsArray(users, notes) {
     {
       id: 1,
       content: "first test comment",
-      duedate: "2019-3-29",
+      duedate: "2019-03-29T07:00:00.000Z",
       note_id: 1
     },
     {
       id: 2,
       content: "second test comment",
-      duedate: "2019-3-29",
+      duedate: "2019-03-29T07:00:00.000Z",
       note_id: 1
     }
   ];
@@ -63,13 +63,11 @@ function makeExpectedNote(users, note) {
   return {
     id: note.id,
     name: note.name,
-    date_created: note.date_created,
     user: {
       id: user.id,
       full_name: user.full_name,
       user_name: user.user_name,
       password: user.password,
-      date_created: user.date_created
     }
   };
 }
@@ -122,8 +120,8 @@ function seedNotesTables(db, users, notes = []) {
     .then(() => {});
 }
 
-function seedCommentsTable(db, users, notes, comments = []) {
-  return seedNotesTable(db, users, notes)
+function seedCommentsTables(db, users, notes, comments = []) {
+  return seedNotesTables(db, users, notes)
     .then(() => db.into("happydog_comments").insert(comments))
     .then(() => {});
 }
@@ -153,6 +151,6 @@ module.exports = {
   seedMaliciousNote,
   seedUsers,
   seedNotesTables,
-  seedCommentsTable,
+  seedCommentsTables,
   makeAuthHeader
 };

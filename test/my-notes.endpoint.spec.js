@@ -2,9 +2,7 @@
 const knex = require('knex');
 const app = require('../src/app');
 const helpers = require('./test-helpers');
-const bcrypt = require('bcryptjs');
 const supertest = require('supertest');
-const { expect } = require('chai');
 
 describe('Notes Endpoints', function() {
   let db;
@@ -26,7 +24,7 @@ describe('Notes Endpoints', function() {
 
   afterEach('cleanup', () => helpers.cleanTables(db));
 
-  // NOTE: GET tests begin
+  // NOTE: tests begin
   describe('GET /api/my-notes', () => {
     context('Given no notes', () => {
       beforeEach('insert users', () => {
@@ -38,6 +36,40 @@ describe('Notes Endpoints', function() {
           .set('Authorization', helpers.makeAuthHeader(testUser, process.env.JWT_SECRET))
           .expect(200, []);
       });
+    });
+  });
+
+  context('Given there are notes and users in the db', () => {
+    before('insert notes', () =>
+      helpers.seedNotesTables(
+        db,
+        testUsers,
+        testNotes
+      )
+    );
+    it('responds with 200 and all cards', () => {
+      const expectedNotes = [
+        {
+          name: 'Vet Visits',
+          id: 1
+        },
+        {
+          name: 'Vaccinations',
+          id: 2
+        },
+        {
+          name: 'Grooming',
+          id: 3
+        },
+        {
+          name: 'Beach Day',
+          id: 4
+        }
+      ];
+      return supertest(app)
+        .get('/api/my-notes')
+        .set('Authorization', helpers.makeAuthHeader(testUser, process.env.JWT_SECRET))
+        .expect(200, expectedNotes);
     });
   });
 
