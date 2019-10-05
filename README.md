@@ -28,4 +28,5 @@
 
 ## Login instructions
 
-
+- User name: `demo_user`
+- Password: `Demo123!`
